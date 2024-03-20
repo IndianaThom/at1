@@ -11,14 +11,13 @@
     .container {
         display: flex;
         flex-wrap: wrap;
-        max-width: 300px;
+        width: 300px;
         margin: auto;
     }
     .card {
         width: 90px;
         height: 90px;
-        background-color: #eee;
-        border: 1px solid #ccc;
+        background-color: #bbb;
         margin: 5px;
         display: flex;
         justify-content: center;
@@ -26,60 +25,59 @@
         font-size: 24px;
         cursor: pointer;
     }
-    .hidden {
-        display: none;
+    .card.flipped {
+        background-color: #fff;
     }
 </style>
 </head>
 <body>
-<div class="container" id="gameBoard">
+<div class="container" id="game-container">
+    <div class="card" data-value="1"></div>
+    <div class="card" data-value="2"></div>
+    <div class="card" data-value="3"></div>
+    <div class="card" data-value="1"></div>
+    <div class="card" data-value="2"></div>
+    <div class="card" data-value="3"></div>
+    <div class="card" data-value="4"></div>
+    <div class="card" data-value="4"></div>
+    <div class="card" data-value="5"></div>
 </div>
 
 <script>
-    // Create an array with pairs of numbers from 1 to 9
-    const numbers = [...Array(9).keys()].map(i => Math.floor(i/2) + 1);
-    // Shuffle the numbers
-    numbers.sort(() => Math.random() - 0.5);
-
+    const cards = document.querySelectorAll('.card');
     let flippedCards = [];
-    let matchedCards = [];
+    let pairs = 0;
 
-    function createCard(number) {
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.textContent = number;
-        card.addEventListener('click', () => flipCard(card, number));
-        return card;
-    }
+    cards.forEach(card => {
+        card.addEventListener('click', () => flipCard(card));
+    });
 
-    function flipCard(card, number) {
-        if (flippedCards.length < 2 && !flippedCards.includes(card) && !matchedCards.includes(card)) {
-            card.textContent = number;
+    function flipCard(card) {
+        if (flippedCards.length < 2 && !flippedCards.includes(card)) {
+            card.classList.add('flipped');
             flippedCards.push(card);
             if (flippedCards.length === 2) {
-                setTimeout(checkMatch, 1000);
+                checkMatch();
             }
         }
     }
 
     function checkMatch() {
-        if (flippedCards[0].textContent === flippedCards[1].textContent) {
-            matchedCards = matchedCards.concat(flippedCards);
+        const value1 = flippedCards[0].getAttribute('data-value');
+        const value2 = flippedCards[1].getAttribute('data-value');
+        if (value1 === value2) {
+            flippedCards.forEach(card => card.style.visibility = 'hidden');
+            pairs++;
+            if (pairs === 3) {
+                setTimeout(() => alert('Congratulations! You won the game!'), 500);
+            }
         } else {
-            flippedCards.forEach(card => card.textContent = '');
+            setTimeout(() => {
+                flippedCards.forEach(card => card.classList.remove('flipped'));
+            }, 1000);
         }
         flippedCards = [];
-        if (matchedCards.length === 9) {
-            alert("Congratulations! You've matched all the cards.");
-        }
     }
-
-    // Create and append cards to the game board
-    const gameBoard = document.getElementById('gameBoard');
-    numbers.forEach(number => {
-        const card = createCard(number);
-        gameBoard.appendChild(card);
-    });
 </script>
 
 </body>
