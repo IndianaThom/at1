@@ -3,47 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Answer Box</title>
+<title>Memory Game</title>
 <style>
     body {
         font-family: Arial, sans-serif;
     }
     .container {
-        width: 50%;
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 300px;
         margin: auto;
-        text-align: center;
     }
-    input[type=text] {
-        width: 60%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        box-sizing: border-box;
-        border: 2px solid #ccc;
-        border-radius: 4px;
-        font-size: 16px;
-    }
-    input[type=submit] {
-        background-color: #4CAF50;
-        color: white;
-        padding: 14px 20px;
-        margin: 8px 0;
-        border: none;
-        border-radius: 4px;
+    .card {
+        width: 90px;
+        height: 90px;
+        background-color: #eee;
+        border: 1px solid #ccc;
+        margin: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
         cursor: pointer;
-        font-size: 16px;
     }
-    input[type=submit]:hover {
-        background-color: #45a049;
+    .hidden {
+        display: none;
     }
 </style>
 </head>
 <body>
-<div class="container">
-    <h2>Type your answer:</h2>
-    <form id="answerForm">
-        <input type="text" id="answer" name="answer"><br>
-        <input type="submit" value="Submit">
-    </form>
+<div class="container" id="gameBoard">
 </div>
+
+<script>
+    // Create an array with pairs of numbers from 1 to 9
+    const numbers = [...Array(9).keys()].map(i => Math.floor(i/2) + 1);
+    // Shuffle the numbers
+    numbers.sort(() => Math.random() - 0.5);
+
+    let flippedCards = [];
+    let matchedCards = [];
+
+    function createCard(number) {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.textContent = number;
+        card.addEventListener('click', () => flipCard(card, number));
+        return card;
+    }
+
+    function flipCard(card, number) {
+        if (flippedCards.length < 2 && !flippedCards.includes(card) && !matchedCards.includes(card)) {
+            card.textContent = number;
+            flippedCards.push(card);
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+    }
+
+    function checkMatch() {
+        if (flippedCards[0].textContent === flippedCards[1].textContent) {
+            matchedCards = matchedCards.concat(flippedCards);
+        } else {
+            flippedCards.forEach(card => card.textContent = '');
+        }
+        flippedCards = [];
+        if (matchedCards.length === 9) {
+            alert("Congratulations! You've matched all the cards.");
+        }
+    }
+
+    // Create and append cards to the game board
+    const gameBoard = document.getElementById('gameBoard');
+    numbers.forEach(number => {
+        const card = createCard(number);
+        gameBoard.appendChild(card);
+    });
+</script>
+
 </body>
 </html>
