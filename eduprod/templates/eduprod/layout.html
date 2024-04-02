@@ -5,15 +5,38 @@
     <title>Q&A</title>
     <link href="{% static 'users/styles.css' %}" rel="stylesheet">
     <script src="{% static 'eduprod/quiz.js' %}" defer></script>
+    <style>
+        /* Header styling */
+        .header {
+            background-color: #452a0b; /* Sets the background color of the header */
+            padding: 10px 0; /* Adds some padding inside the header for better spacing */
+            display: flex; /* Uses Flexbox for layout, helping align logo and logout button */
+            justify-content: space-between; /* Spreads out items to use available space */
+            align-items: center; /* Centers items vertically within the header */
+        }
+
+        .header .logo img {
+            width: 200px; /* This ensures the logo image width */
+        }
+
+        .header .user-info {
+            display: flex; /* Aligns user info and logout button side by side */
+            align-items: center; /* Centers them vertically */
+        }
+
+        .header .user-info form {
+            margin: 0 20px; /* Removes default margin and adds specific left margin */
+        }
+    </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">
-            <img src="{% static 'users/logo.gif' %}" alt="Logo">
+            <img src="{% static 'users/coffee.jpg' %}" alt="Logo">
         </div>
         <div class="user-info">
             <span>{{ user.username }}</span>
-            <form action="{% url 'users:logout' %}" method="post" style="margin: 0; margin-left: 20px;">
+            <form action="{% url 'users:logout' %}" method="post" style="margin: 0;">
                 {% csrf_token %}
                 <button type="submit">Log out</button>
             </form>
